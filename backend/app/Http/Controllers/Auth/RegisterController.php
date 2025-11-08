@@ -10,7 +10,6 @@ use App\Http\Controllers\Controller;
 class RegisterController extends Controller
 {
 
-    protected $redirectTo = '/home';
 public function register(Request $request)
     {
         $validated = Validator::make($request->all(), [
@@ -27,12 +26,7 @@ public function register(Request $request)
             'phone' => $validated['phone'],
         ]);
 
-        // sanctum mazal brk:
-        if (method_exists($user, 'createToken')) {
-            $token = $user->createToken('auth_token')->plainTextToken;
-        } else {
-            $token = null;
-        }
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'message' => 'User registered successfully',
