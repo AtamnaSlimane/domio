@@ -61,7 +61,7 @@ const SignUpPage = () => {
           <FieldSet>
             <FieldLegend>Sign up</FieldLegend>
             <FieldDescription>Create your account</FieldDescription>
-            <FieldGroup>
+            <FieldGroup className="max-h-70 overflow-y-scroll">
               <div className="grid grid-cols-2 gap-4">
                 <Field>
                   <FieldLabel htmlFor="first_name">First Name</FieldLabel>
@@ -198,6 +198,18 @@ const SignUpPage = () => {
             </Field>
           </FieldSet>
         </form>
+        <p className="pt-1 text-center">
+          Already have an account?{" "}
+          <span>
+            <Button
+              variant="link"
+              className="m-0 p-0"
+              onClick={() => router.push("/login")}
+            >
+              Login
+            </Button>
+          </span>
+        </p>
       </div>
     </div>
   );

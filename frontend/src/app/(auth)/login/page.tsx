@@ -96,6 +96,18 @@ const LoginPage = () => {
             </Field>
           </FieldSet>
         </form>
+        <p className="pt-1 text-center">
+          Don&apos;t have an account yet?{" "}
+          <span>
+            <Button
+              variant="link"
+              className="m-0 p-0"
+              onClick={() => router.push("/sign-up")}
+            >
+              Sign up
+            </Button>
+          </span>
+        </p>
       </div>
     </div>
   );
