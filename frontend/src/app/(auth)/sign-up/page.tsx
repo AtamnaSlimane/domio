@@ -16,16 +16,23 @@ import {
 } from "@/components/ui/field";
 import Logo from "@/components/Navbar/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { PhoneInput } from "@/components/ui/base-phone-input";
 
 const SignUpPage = () => {
   const formSchema = z
     .object({
-      first_name: z.string().min(2, "First name must be at least 2 characters"),
-      last_name: z.string().min(2, "Last name must be at least 2 characters"),
+      first_name: z.string().min(2, "First name required"),
+      last_name: z.string().min(2, "Last name required"),
       email: z.email("Email is required"),
-      password: z.string().min(8, "Password must be at least 8 characters"),
+      password: z
+        .string()
+        .min(1, "Password is required")
+        .min(8, "Password must be at least 8 characters"),
       confirm_password: z.string(),
-      phone: z.string().min(8, "Phone number must be at least 8 characters"),
+      phone: z
+        .string()
+        .min(1, "Phone number is required")
+        .min(8, "Phone number must be at least 8 characters"),
     })
     .refine((data) => data.password === data.confirm_password, {
       message: "Passwords do not match",
@@ -61,7 +68,7 @@ const SignUpPage = () => {
           <FieldSet>
             <FieldLegend>Sign up</FieldLegend>
             <FieldDescription>Create your account</FieldDescription>
-            <FieldGroup className="max-h-70 overflow-y-scroll">
+            <FieldGroup className="max-h-96 overflow-y-scroll">
               <div className="grid grid-cols-2 gap-4">
                 <Field>
                   <FieldLabel htmlFor="first_name">First Name</FieldLabel>
@@ -128,49 +135,53 @@ const SignUpPage = () => {
                 )}
               />
 
-              {/* Password Field */}
-              <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field>
-                    <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input
-                      id="password"
-                      autoComplete="off"
-                      type="password"
-                      placeholder="password"
-                      {...field}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+              <div className="grid grid-cols-2 gap-4">
+                <Field>
+                  <FieldLabel htmlFor="password">Password</FieldLabel>
+                  <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Input
+                          id="password"
+                          autoComplete="off"
+                          type="password"
+                          placeholder="password123"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </>
                     )}
-                  </Field>
-                )}
-              />
+                  />
+                </Field>
 
-              {/* Confirm Password Field */}
-              <Controller
-                name="confirm_password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field>
-                    <FieldLabel htmlFor="confirm_password">
-                      Confirm Password
-                    </FieldLabel>
-                    <Input
-                      id="confirm_password"
-                      autoComplete="off"
-                      type="password"
-                      placeholder="password"
-                      {...field}
-                    />
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
+                <Field>
+                  <FieldLabel htmlFor="confirm_password">
+                    Confirm Password
+                  </FieldLabel>
+                  <Controller
+                    name="confirm_password"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <>
+                        <Input
+                          id="confirm_password"
+                          autoComplete="off"
+                          type="password"
+                          placeholder="password123"
+                          {...field}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </>
                     )}
-                  </Field>
-                )}
-              />
+                  />
+                </Field>
+              </div>
 
               {/* Phone Field */}
               <Controller
@@ -179,11 +190,11 @@ const SignUpPage = () => {
                 render={({ field, fieldState }) => (
                   <Field>
                     <FieldLabel htmlFor="phone">Phone</FieldLabel>
-                    <Input
+                    <PhoneInput
                       id="phone"
-                      autoComplete="off"
-                      type="phone"
                       placeholder="12345678"
+                      autoComplete="off"
+                      type="tel"
                       {...field}
                     />
                     {fieldState.invalid && (
