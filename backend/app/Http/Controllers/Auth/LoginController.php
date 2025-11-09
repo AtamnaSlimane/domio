@@ -34,12 +34,15 @@ public function login(Request $request)
         ], 200);
     }
 
-    public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
+public function logout(Request $request)
+{
+    $user = $request->user();
 
-        return response()->json([
-            'message' => 'Logged out successfully',
-        ]);
+    if ($user && $user->currentAccessToken() && !($user->currentAccessToken() instanceof \Laravel\Sanctum\TransientToken)) {
+        $user->currentAccessToken()->delete();
+        return response()->json(['message' => 'API token revoked successfully']);
     }
+
+    return response()->json(['message' => 'No authenticated user'], 401);
+}
 }
