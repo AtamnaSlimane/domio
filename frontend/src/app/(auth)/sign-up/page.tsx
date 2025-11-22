@@ -2,7 +2,6 @@
 import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
@@ -17,43 +16,70 @@ import {
 import Logo from "@/components/Navbar/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PhoneInput } from "@/components/ui/base-phone-input";
+import {
+  signUpFormSchema,
+  SignUpFormSchema,
+} from "@/form-schemas/sign-up-schema";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import { toast } from "sonner";
 
 const SignUpPage = () => {
-  const formSchema = z
-    .object({
-      first_name: z.string().min(2, "First name required"),
-      last_name: z.string().min(2, "Last name required"),
-      email: z.email("Email is required"),
-      password: z
-        .string()
-        .min(1, "Password is required")
-        .min(8, "Password must be at least 8 characters"),
-      confirm_password: z.string(),
-      phone: z
-        .string()
-        .min(1, "Phone number is required")
-        .min(8, "Phone number must be at least 8 characters"),
-    })
-    .refine((data) => data.password === data.confirm_password, {
-      message: "Passwords do not match",
-      path: ["confirm_password"],
-    });
+  const signUpMutation = useMutation({
+    mutationKey: ["sign-up"],
+    mutationFn: async (data: {
+      name: string;
+      email: string;
+      password: string;
+      password_confirmation: string;
+      phone: string;
+    }) => {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_LARAVEL_API_URL}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "Accept-Encoding": "gzip, deflate, br",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast.success("Sign up successful");
+      Cookies.set("token", data.token);
+      router.replace("/dashboard");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<SignUpFormSchema>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       first_name: "",
       last_name: "",
       email: "",
       password: "",
-      confirm_password: "",
+      password_confirmation: "",
       phone: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = (data: SignUpFormSchema) => {
+    const newData = {
+      name: data.first_name + " " + data.last_name,
+      email: data.email,
+      password: data.password,
+      password_confirmation: data.password_confirmation,
+      phone: data.phone,
+    };
+    signUpMutation.mutate(newData);
   };
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -159,16 +185,16 @@ const SignUpPage = () => {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="confirm_password">
+                  <FieldLabel htmlFor="password_confirmation">
                     Confirm Password
                   </FieldLabel>
                   <Controller
-                    name="confirm_password"
+                    name="password_confirmation"
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <>
                         <Input
-                          id="confirm_password"
+                          id="password_confirmation"
                           autoComplete="off"
                           type="password"
                           placeholder="password123"
@@ -205,7 +231,9 @@ const SignUpPage = () => {
               />
             </FieldGroup>
             <Field>
-              <Button>Sign up</Button>
+              <Button type="submit" disabled={signUpMutation.isPending}>
+                {signUpMutation.isPending ? "Signing up..." : "Sign up"}
+              </Button>
             </Field>
           </FieldSet>
         </form>

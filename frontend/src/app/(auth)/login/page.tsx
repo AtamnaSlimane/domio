@@ -16,24 +16,40 @@ import {
 } from "@/components/ui/field";
 import Logo from "@/components/Navbar/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { loginFormSchema, LoginFormSchema } from "@/form-schemas/login-schema";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 const LoginPage = () => {
-  const formSchema = z.object({
-    email: z.email("Email is required"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
+  const loginMutation = useMutation({
+    mutationKey: ["login"],
+    mutationFn: async (data: { email: string; password: string }) => {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    },
   });
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<LoginFormSchema>({
+    resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormSchema) => {
+    loginMutation.mutate(data);
+    if (loginMutation.isSuccess) {
+      Cookies.set("token", loginMutation.data.token);
+      router.push("/dashboard");
+    }
   };
   return (
     <div className="w-full h-full flex items-center justify-center">
