@@ -19,12 +19,14 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { loginFormSchema, LoginFormSchema } from "@/form-schemas/login-schema";
 import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const LoginPage = () => {
   const loginMutation = useMutation({
     mutationKey: ["login"],
     mutationFn: async (data: { email: string; password: string }) => {
-      const response = await fetch("/api/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_LARAVEL_API_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,6 +34,14 @@ const LoginPage = () => {
         body: JSON.stringify(data),
       });
       return response.json();
+    },
+    onSuccess: (data) => {
+      Cookies.set("token", data.token);
+      toast.success("Login successful");
+      router.replace("/dashboard");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
   const router = useRouter();
@@ -44,12 +54,8 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormSchema) => {
+  const onSubmit = (data: LoginFormSchema) => {
     loginMutation.mutate(data);
-    if (loginMutation.isSuccess) {
-      Cookies.set("token", loginMutation.data.token);
-      router.push("/dashboard");
-    }
   };
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -78,6 +84,7 @@ const LoginPage = () => {
                       type="email"
                       placeholder="john.doe@email.com"
                       {...field}
+                      disabled={loginMutation.isPending}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -99,6 +106,7 @@ const LoginPage = () => {
                       type="password"
                       placeholder="password"
                       {...field}
+                      disabled={loginMutation.isPending}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -108,7 +116,12 @@ const LoginPage = () => {
               />
             </FieldGroup>
             <Field>
-              <Button>Login</Button>
+              <Button type="submit" disabled={loginMutation.isPending} >{loginMutation.isPending ? (
+                  <>
+                  Logging in
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : "Login"}</Button>
             </Field>
           </FieldSet>
         </form>

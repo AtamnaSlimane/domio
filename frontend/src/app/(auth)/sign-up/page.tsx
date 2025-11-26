@@ -23,6 +23,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 const SignUpPage = () => {
   const signUpMutation = useMutation({
@@ -109,6 +110,7 @@ const SignUpPage = () => {
                           type="text"
                           placeholder="John"
                           {...field}
+                          disabled={signUpMutation.isPending}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -131,6 +133,7 @@ const SignUpPage = () => {
                           type="text"
                           placeholder="Doe"
                           {...field}
+                          disabled={signUpMutation.isPending}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -153,6 +156,7 @@ const SignUpPage = () => {
                       type="email"
                       placeholder="john.doe@email.com"
                       {...field}
+                      disabled={signUpMutation.isPending}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -175,6 +179,7 @@ const SignUpPage = () => {
                           type="password"
                           placeholder="password123"
                           {...field}
+                          disabled={signUpMutation.isPending}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -199,6 +204,7 @@ const SignUpPage = () => {
                           type="password"
                           placeholder="password123"
                           {...field}
+                          disabled={signUpMutation.isPending}
                         />
                         {fieldState.invalid && (
                           <FieldError errors={[fieldState.error]} />
@@ -222,6 +228,7 @@ const SignUpPage = () => {
                       autoComplete="off"
                       type="tel"
                       {...field}
+                      disabled={signUpMutation.isPending}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -232,7 +239,12 @@ const SignUpPage = () => {
             </FieldGroup>
             <Field>
               <Button type="submit" disabled={signUpMutation.isPending}>
-                {signUpMutation.isPending ? "Signing up..." : "Sign up"}
+                {signUpMutation.isPending ? (
+                  <>
+                  Signing up
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  </>
+                ) : "Sign up"}
               </Button>
             </Field>
           </FieldSet>
