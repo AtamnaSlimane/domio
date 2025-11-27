@@ -83,14 +83,14 @@
   --chart-3: #9ca3af;
   --chart-4: #6b7280;
   --chart-5: #4b5563;
-  --sidebar: #f9fafb;
-  --sidebar-foreground: #0a0a0a;
+  --sidebar: #0a0a0a;
+  --sidebar-foreground: #f9fafb;
   --sidebar-primary: #ebbf50;
-  --sidebar-primary-foreground: #7d652a;
-  --sidebar-accent: #d4d4d8;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e2e8f0;
-  --sidebar-ring: #a1a1aa;
+  --sidebar-primary-foreground: #372d13;
+  --sidebar-accent: #744e14;
+  --sidebar-accent-foreground: #f9fafb;
+  --sidebar-border: #374151;
+  --sidebar-ring: #ebbf50;
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Cormorant Garamond', serif;
   --font-mono: 'Roboto Mono', monospace;
@@ -176,6 +176,8 @@
 body {
   letter-spacing: var(--tracking-normal);
   height: 100vh;
-  width: 100vw;
   background-color: var(--background);
+}
+
+.monitor-border {
 }

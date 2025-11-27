@@ -1,7 +1,13 @@
+"use client";
+
+import { useUser } from "@/hooks/use-auth";
+
 const ProfilePage = () => {
+    const { data, isLoading } = useUser();
+    console.log(data);
     return (
         <div>
-            <h1>Profile</h1>
+            {JSON.stringify(data)}
         </div>
     )
 }

@@ -4,7 +4,6 @@ const nextConfig: NextConfig = {
   experimental: {
     typedEnv: true,
   },
-  typedRoutes: true,
 };
 
 export default nextConfig;
