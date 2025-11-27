@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -27,7 +28,7 @@ public function register(Request $request)
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
+    Log::info('User registered .', ['id' => $user->id,'email'=>$user->email,'ip'=>$request->ip(),'user_agent' => request()->userAgent()]);
         return response()->json([
             'message' => 'User registered successfully',
             'user' => $user,

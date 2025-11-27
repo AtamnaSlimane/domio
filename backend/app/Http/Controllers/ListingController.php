@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Listing;
+use Illuminate\Support\Facades\Log;
 
 
 class ListingController extends Controller
@@ -34,10 +35,10 @@ return response()->json($listings);
         ]);
 
         $validated['user_id'] = Auth::id();
+        $user=Auth::user();
 
         $listing=Listing::create($validated);
-
-       # return redirect()->route('home')->with('success', 'Listing added successfully!');
+        Log::info('User made listing .', ['id' => $user->id,'listing_id' => $listing->id,'email'=>$user->email,'ip'=>$request->ip(),'user_agent' => request()->userAgent()]);
         return response()->json([
            'message' => 'Listing added successfully!',
           'listing' => $listing,
@@ -49,4 +50,22 @@ return response()->json($listings);
         ], 200);
 
     }
+    public function destroy(Request $request,$listing_id){
+$user=Auth::user();
+        $listing=Listing::find($listing_id);
+        if (!$listing) {
+         return response()->json(['message' => 'Listing not found'], 403);
+        }
+        if($listing->user_id!=auth()->id()){
+         return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        $listing->delete();
+        Log::info('User deleted listing .', ['id' => $user->id,'listing_id' => $listing->id,'email'=>$user->email,'ip'=>$request->ip(),'user_agent' => request()->userAgent()]);
+     return response()->json([
+        'message' => 'Listing is deleted successfully.'
+    ], 201);
+
+    }
+
+
 }

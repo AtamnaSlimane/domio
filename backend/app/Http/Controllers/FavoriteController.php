@@ -13,7 +13,7 @@ class FavoriteController extends Controller
         ], 200);
     }
     public function store(Request $request,$listing_id){
-        auth()->user()->favorites()->syncWithoutDetaching($listing_id);
+    auth()->user()->favorites()->syncWithoutDetaching($listing_id);
      return response()->json([
         'message' => 'Listing added to favorites.'
     ], 201);
