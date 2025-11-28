@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FavoriteController;
 
 Route::middleware('auth:sanctum')->group(function () {
     //get user info
@@ -18,6 +19,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Protected routes (require token)
     Route::post('/listings', [ListingController::class, 'store']); // create a listing
     Route::get('/listings/mine', [ListingController::class, 'myListings']); // show the user own listings
+    Route::get('/listings/favorites', [FavoriteController::class,'index']); // show the user own favorite listings
+    Route::post('/listings/favorites/{listing_id}', [FavoriteController::class,'store']);
+    Route::delete('/listings/favorites/{listing_id}', [FavoriteController::class,'destroy']);
 });
 #public routes
 Route::post('/login', [LoginController::class, 'login']);
