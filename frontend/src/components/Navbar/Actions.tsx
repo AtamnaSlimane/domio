@@ -15,13 +15,12 @@ const Actions = () => {
         </Button>
       ) : data ? (
         <>
-        
-        <Button variant="ghost" size={"lg"} asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </Button>
-        <Button variant="ghost" size={"lg"} asChild>
-          <Link href="/profile">Profile</Link>
-        </Button>
+          <Button variant="ghost" size={"lg"} asChild>
+            <Link href="/explore">Explore</Link>
+          </Button>
+          <Button variant="ghost" size={"lg"} asChild>
+            <Link href="/profile">Profile</Link>
+          </Button>
         </>
       ) : (
         <>
