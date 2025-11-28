@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "../lib/query-client";
 import QueryProvider from "../lib/query-client";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "Dzomio",
@@ -26,8 +27,17 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Toaster />
-            {children}
+            <SidebarProvider
+              style={{
+                // @ts-ignore
+                "--sidebar-width": "17rem",
+                height: "100vh",
+              }}
+              defaultOpen={false}
+            >
+              <Toaster />
+              {children}
+            </SidebarProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>
