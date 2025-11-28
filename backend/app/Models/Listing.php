@@ -24,8 +24,8 @@ class Listing extends Model
         'longitude',
         'status',
     ];
-
-    // 🧩 Relationships
+   // protected $hidden = ['updated_at', 'created_at'];
+    //relations
     public function host()
     {
         return $this->belongsTo(User::class, 'user_id');

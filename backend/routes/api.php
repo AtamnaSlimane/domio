@@ -17,13 +17,22 @@ Route::middleware('auth:sanctum')->group(function () {
      ->middleware('throttle:5,60');
     Route::post('/logout', [LoginController::class, 'logout']);
     // Protected routes (require token)
-    Route::post('/listings', [ListingController::class, 'store']); // create a listing
+    Route::post('/listings', [ListingController::class, 'store']) // create a listing
+     ->middleware('throttle:5,60');
     Route::get('/listings/mine', [ListingController::class, 'myListings']); // show the user own listings
+    Route::get('/listings/{listing_id}', [ListingController::class, 'show']);//show single listing
+    Route::delete('/listings/{listing_id}', [ListingController::class, 'destroy']); // delete a listing
     Route::get('/listings/favorites', [FavoriteController::class,'index']); // show the user own favorite listings
-    Route::post('/listings/favorites/{listing_id}', [FavoriteController::class,'store']);
-    Route::delete('/listings/favorites/{listing_id}', [FavoriteController::class,'destroy']);
+    Route::post('/listings/favorites/{listing_id}', [FavoriteController::class,'store'])//add favorite listing
+     ->middleware('throttle:20,1');
+    Route::delete('/listings/favorites/{listing_id}', [FavoriteController::class,'destroy'])//remove favorite listing
+     ->middleware('throttle:20,1');
 });
 #public routes
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register', [RegisterController::class, 'register']);
-Route::get('/listings', [ListingController::class, 'index']); //fetch all listings
+Route::post('/login', [LoginController::class, 'login'])
+     ->middleware('throttle:5,60');
+Route::post('/register', [RegisterController::class, 'register'])
+     ->middleware('throttle:5,60');
+Route::get('/listings', [ListingController::class, 'index']) //fetch all listings
+     ->middleware('throttle:120,1');
+

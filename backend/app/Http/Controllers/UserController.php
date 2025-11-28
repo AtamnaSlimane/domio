@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Listing;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -34,6 +35,8 @@ $validated = $request->validate([
             $user->password = Hash::make($validated['password']);
         }
 $user->save();
+
+Log::info('User updated his profile .', ['id' => $user->id,'email'=>$user->email,'ip'=>$request->ip(),'user_agent' => request()->userAgent()]);
 return response()->json([
         'message' => 'User updated successfully',
         'user' => $user,
