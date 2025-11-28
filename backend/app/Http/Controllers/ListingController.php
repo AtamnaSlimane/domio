@@ -10,11 +10,9 @@ use Illuminate\Support\Facades\Log;
 
 class ListingController extends Controller
 {
-    //
 public function index(Request $request){
 $listings=Listing::paginate(9);
 return response()->json($listings);
-#return view('home', compact('user', 'listings'));
 }
  public function store(Request $request)
     {
