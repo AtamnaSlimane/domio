@@ -24,8 +24,10 @@ import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SignUpPage = () => {
+  const queryClient = useQueryClient();
   const signUpMutation = useMutation({
     mutationKey: ["sign-up"],
     mutationFn: async (data: {
@@ -50,9 +52,10 @@ const SignUpPage = () => {
       return response.json();
     },
     onSuccess: (data) => {
-      toast.success("Sign up successful");
       Cookies.set("token", data.token);
-      router.replace("/dashboard");
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.success("Sign up successful");
+      router.replace("/explore");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -241,10 +244,12 @@ const SignUpPage = () => {
               <Button type="submit" disabled={signUpMutation.isPending}>
                 {signUpMutation.isPending ? (
                   <>
-                  Signing up
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing up
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   </>
-                ) : "Sign up"}
+                ) : (
+                  "Sign up"
+                )}
               </Button>
             </Field>
           </FieldSet>
