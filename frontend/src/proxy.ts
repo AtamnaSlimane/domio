@@ -10,13 +10,13 @@ export function proxy(request: NextRequest) {
   // If user is authenticated and tries to access auth pages, redirect to dashboard
   if (isAuthenticated) {
     if (pathname === "/sign-up" || pathname === "/login") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
   // If user is NOT authenticated and tries to access protected pages, redirect to login
   if (!isAuthenticated) {
-    if (pathname === "/dashboard") {
+    if (pathname !== "/" && pathname !== "/sign-up" && pathname !== "/login") {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
@@ -25,5 +25,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/sign-up", "/login"],
+  matcher: ["/sign-up", "/login"],
 };
