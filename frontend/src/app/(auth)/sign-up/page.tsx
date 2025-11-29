@@ -20,47 +20,11 @@ import {
   signUpFormSchema,
   SignUpFormSchema,
 } from "@/form-schemas/sign-up-schema";
-import { useMutation } from "@tanstack/react-query";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSignUp } from "@/hooks/use-auth";
 
 const SignUpPage = () => {
-  const queryClient = useQueryClient();
-  const signUpMutation = useMutation({
-    mutationKey: ["sign-up"],
-    mutationFn: async (data: {
-      name: string;
-      email: string;
-      password: string;
-      password_confirmation: string;
-      phone: string;
-    }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_LARAVEL_API_URL}/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            "Accept-Encoding": "gzip, deflate, br",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      Cookies.set("token", data.token);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("Sign up successful");
-      router.replace("/explore");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
+  const signUpMutation = useSignUp();
   const router = useRouter();
 
   const form = useForm<SignUpFormSchema>({

@@ -2,7 +2,6 @@
 import { Input } from "@/components/ui/input";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
@@ -17,41 +16,13 @@ import {
 import Logo from "@/components/Navbar/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { loginFormSchema, LoginFormSchema } from "@/form-schemas/login-schema";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { User } from "@/hooks/use-auth";
-import axios from "@/lib/axios";
+import { useLogin } from "@/hooks/use-auth";
 
 const LoginPage = () => {
-  const queryClient = useQueryClient();
-  const loginMutation = useMutation({
-    mutationKey: ["login"],
-    mutationFn: async (data: { email: string; password: string }) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_LARAVEL_API_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      return response.json();
-    },
-    onSuccess: (data) => {
-      Cookies.set("token", data.token);
-      queryClient.invalidateQueries({ queryKey: ["user"] });
-      toast.success("Login successful");
-      router.replace("/explore");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
   const router = useRouter();
+
+  const loginMutation = useLogin();
 
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),

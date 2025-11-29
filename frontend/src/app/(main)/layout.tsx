@@ -1,5 +1,5 @@
 "use client";
-import AppSidebar from "@/components/AppSidebar";
+import AppSidebar from "@/components/AppSidebar/AppSidebar";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Loader2 } from "lucide-react";
 
