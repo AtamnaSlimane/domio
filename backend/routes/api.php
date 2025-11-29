@@ -31,9 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
      ->middleware('throttle:20,1');
 
     //reviews routes
-    Route::get('/listings/reviews/{listing_id}', [ReviewController::class,'index']); // show the user own favorite listings
-    Route::post('/listings/reviews/{listing_id}', [ReviewController::class,'store']); // show the user own favorite listings
-    Route::delete('/listings/reviews/{listing_id}', [ReviewController::class,'destroy']); // show the user own favorite listings
+    Route::get('/listings/reviews/{listing_id}', [ReviewController::class,'index']); // listing reviews
+    Route::post('/listings/reviews/{listing_id}', [ReviewController::class,'store']); // create a Review
+    Route::patch('/listings/reviews/{listing_id}', [ReviewController::class,'edit']); // edit a Review
+    Route::delete('/listings/reviews/{listing_id}', [ReviewController::class,'destroy']); // delete a review
 });
 #public routes
 Route::post('/login', [LoginController::class, 'login'])
